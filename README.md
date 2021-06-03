@@ -2,5 +2,6 @@
 
 <실행>
 $ g++ snake.cpp main.cpp -lncurses
-\n$ ./a.out
+
+$ ./a.out
 
