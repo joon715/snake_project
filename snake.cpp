@@ -25,17 +25,22 @@ snakeclass::snakeclass()
     getmaxyx(stdscr,maxheight,maxwidth);
     partchar='x';
     oldalchar=(char)219;
-    etel='*';
+    etel='*'; //food
+    pstel='@'; //poison
     food.x=0;
     food.y=0;
+    poison.x=0;
+    poison.y=0;
     for(int i=0;i<5;i++)
         snake.push_back(snakepart(40+i,10));
     points=0;
     del=110000;
-    get=0;
+    get=0; //get boolean initialation
+    lost = 0; //lost boolean initialation
     direction='l';
     srand(time(NULL));
     putfood();
+    putpoison();
     //make the game-board -- up-vertical
     for(int i=0;i<maxwidth-1;i++)
     {
@@ -69,7 +74,9 @@ snakeclass::snakeclass()
     move(maxheight-1,0);
     printw("%d",points);
     move(food.y,food.x);
+    move(poison.y, poison.x);
     addch(etel);
+    //addch(pstel);
     refresh();
 }
 
@@ -100,6 +107,26 @@ void snakeclass::putfood()
     refresh();
 }
 
+void snakeclass::putpoison()
+{
+  while(1)
+  {
+      int tmpx=rand()%maxwidth+1;
+      int tmpy=rand()%maxheight+1;
+      for(int i=0;i<snake.size();i++)
+          if(snake[i].x==tmpx && snake[i].y==tmpy)
+              continue;
+      if(tmpx>=maxwidth-2 || tmpy>=maxheight-3)
+          continue;
+      poison.x=tmpx;
+      poison.y=tmpy;
+      break;
+  }
+  move(poison.y,poison.x);
+  addch(pstel);
+  refresh();
+}
+
 bool snakeclass::collision()
 {
     if(snake[0].x==0 || snake[0].x==maxwidth-1 || snake[0].y==0 || snake[0].y==maxheight-2)
@@ -119,7 +146,19 @@ bool snakeclass::collision()
         printw("%d",points);
         if((points%100)==0)
             del-=10000;
-    }else
+    }    //collision with the poison
+
+    else if(snake[0].x==poison.x && snake[0].y==poison.y)
+      {
+          get=false;
+          lost = true;
+          putpoison();
+          points-=10;
+          move(maxheight-1,0);
+          printw("%d",points);
+          if((points%100)==0)
+              del-=10000;
+      }else
         get=false;
     return false;
 }
@@ -154,11 +193,18 @@ void snakeclass::movesnake()
     //if there wasn't a collision with food
     if(!get)
     {
+      if(lost) //poison collison -> delch
+      {
+        //partcharSize = partchar.length;
+        //partchar =
+      }
         move(snake[snake.size()-1].y,snake[snake.size()-1].x);
         printw(" ");
         refresh();
         snake.pop_back();
     }
+
+    //direction func
     if(direction=='l')
     {
         snake.insert(snake.begin(),snakepart(snake[0].x-1,snake[0].y));

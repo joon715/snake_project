@@ -13,7 +13,7 @@ struct snakepart{
 class snakeclass{
     int points,del;
     //indicates that the snake get food (it makes the snake longer)
-    bool get;
+    bool get,lost; 
     //indicates the current direction of the snake
     char direction;
 
@@ -22,10 +22,14 @@ class snakeclass{
     char partchar;
     char oldalchar;
     char etel;
+    char pstel;
     snakepart food;
+    snakepart poison;
+
     std::vector<snakepart> snake; //represent the snake
 
     void putfood();
+    void putpoison();
     bool collision();
     void movesnake();
 
