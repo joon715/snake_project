@@ -6,78 +6,97 @@
 using namespace std;
 snakepart::snakepart(int col,int row)
 {
-    x=col;
-    y=row;
+	x=col;
+	y=row;
 }
 
 snakepart::snakepart()
 {
-    x=0;
-    y=0;
+	x=0;
+	y=0;
 }
 snakeclass::snakeclass()
 {
-    initscr();
-    nodelay(stdscr,true);           //if there wasn't any key pressed don't wait for keypress
-    keypad(stdscr,true);            //init the keyboard
-    noecho();                                   //don't write
-    curs_set(0);                            //cursor invisible
-    getmaxyx(stdscr,maxheight,maxwidth);
-    partchar='x';
-    oldalchar=(char)219;
-    etel='*'; //food
-    pstel='@'; //poison
-    food.x=0;
-    food.y=0;
-    poison.x=0;
-    poison.y=0;
-    for(int i=0;i<5;i++)
-        snake.push_back(snakepart(40+i,10));
-    points=0;
-    del=110000;
-    get=0; //get boolean initialation
-    lost = 0; //lost boolean initialation
-    direction='l';
-    srand(time(NULL));
-    putfood();
-    putpoison();
-    //make the game-board -- up-vertical
-    for(int i=0;i<maxwidth-1;i++)
-    {
-        move(0,i);
-        addch(oldalchar);
-    }
-    //left-horizontal
-    for(int i=0;i<maxheight-1;i++)
-    {
-        move(i,0);
-        addch(oldalchar);
-    }
-    //down-vertical
-    for(int i=0;i<maxwidth-1;i++)
-    {
-        move(maxheight-2,i);
-        addch(oldalchar);
-    }
-    //right-horizontal
-    for(int i=0;i<maxheight-1;i++)
-    {
-        move(i,maxwidth-2);
-        addch(oldalchar);
-    }
-    //draw the snake
-    for(int i=0;i<snake.size();i++)
-    {
-        move(snake[i].y,snake[i].x);
-        addch(partchar);
-    }
-    move(maxheight-1,0);
-    printw("%d",points);
-    move(food.y,food.x);
-    move(poison.y, poison.x);
-    addch(etel);
-    //addch(pstel);
-    refresh();
+	initscr();
+	nodelay(stdscr,true);           //if there wasn't any key pressed don't wait for keypress
+	keypad(stdscr,true);            //init the keyboard
+	noecho();                                   //don't write
+	curs_set(0);                            //cursor invisible
+
+	getmaxyx(stdscr,maxheight,maxwidth);	// set the window size
+
+	// set the character of snake, wall, food, poison
+	partchar='x'; //snake
+	oldalchar=(char)219; //wall
+	etel='*'; //food
+	pstel='@'; //poison
+
+	//initialize food location
+	food.x=0;
+	food.y=0;
+
+	//initialize poison location
+	poison.x=0;
+	poison.y=0;
+
+	//처음 뱀은 5칸짜리로 시작
+	for(int i=0;i<5;i++)
+		snake.push_back(snakepart(40+i,10));
+
+	// point 초기화
+	points=0;
+	del=110000;
+	get=0; //get boolean initialation
+	lost = 0; //lost boolean initialation
+
+	// 처음 방향은 왼쪽으로 초기화
+	direction='l';
+	srand(time(NULL));
+	putfood();
+	putpoison();
+	
+	// Make the game-board
+	// up-horizontal
+	for(int i=0;i<maxwidth-1;i++)
+	{
+	move(0,i);
+	addch(oldalchar);
+	}
+	//left-vertical
+	for(int i=0;i<maxheight-1;i++)
+	{
+	move(i,0);
+	addch(oldalchar);
+	}
+	//down-horizontal
+	for(int i=0;i<maxwidth-1;i++)
+	{
+	move(maxheight-2,i);
+	addch(oldalchar);
+	}
+	//right-vertical
+	for(int i=0;i<maxheight-1;i++)
+	{
+	move(i,maxwidth-2);
+	addch(oldalchar);
+	}
+
+	//draw the snake
+	for(int i=0;i<snake.size();i++)
+	{
+	move(snake[i].y,snake[i].x);
+	addch(partchar);
+	}
+
+	// 게임 점수 표시
+	move(maxheight-1,0);
+	printw("%d",points);
+	move(food.y,food.x);
+	move(poison.y, poison.x);
+	addch(etel);
+
+	//addch(pstel);
+	refresh();
 }
 
 snakeclass::~snakeclass()
@@ -87,12 +106,14 @@ snakeclass::~snakeclass()
     endwin();
 }
 
+//food 생성 함수
 void snakeclass::putfood()
 {
     while(1)
     {
-        int tmpx=rand()%maxwidth+1;
-        int tmpy=rand()%maxheight+1;
+        int tmpx = rand() % maxwidth + 1; // 1 ~ width
+        int tmpy = rand() % maxheight + 1; // 1 ~ height
+
         for(int i=0;i<snake.size();i++)
             if(snake[i].x==tmpx && snake[i].y==tmpy)
                 continue;
@@ -107,6 +128,7 @@ void snakeclass::putfood()
     refresh();
 }
 
+//poison 생성 함수
 void snakeclass::putpoison()
 {
   while(1)
@@ -127,40 +149,52 @@ void snakeclass::putpoison()
   refresh();
 }
 
+//food, poison, wall과 충돌할 경우
 bool snakeclass::collision()
 {
-    if(snake[0].x==0 || snake[0].x==maxwidth-1 || snake[0].y==0 || snake[0].y==maxheight-2)
-        return true;
-    for(int i=2;i<snake.size();i++)
-    {
-        if(snake[0].x==snake[i].x && snake[0].y==snake[i].y)
-            return true;
-    }
-    //collision with the food
-    if(snake[0].x==food.x && snake[0].y==food.y)
-    {
-        get=true;
-        putfood();
-        points+=10;
-        move(maxheight-1,0);
-        printw("%d",points);
-        if((points%100)==0)
-            del-=10000;
-    }    //collision with the poison
+	//snake가 벽과 충돌할 경우	
+	if(snake[0].x==0 || snake[0].x==maxwidth-1 || snake[0].y==0 || snake[0].y==maxheight-2)
+		return true;
 
-    else if(snake[0].x==poison.x && snake[0].y==poison.y)
-      {
-          get=false;
-          lost = true;
-          putpoison();
-          points-=10;
-          move(maxheight-1,0);
-          printw("%d",points);
-          if((points%100)==0)
-              del-=10000;
-      }else
-        get=false;
-    return false;
+	//snake가 자기 자신과 충돌할 경우
+	for(int i=2;i<snake.size();i++)
+	{
+		if(snake[0].x==snake[i].x && snake[0].y==snake[i].y)
+			return true;
+	}
+
+    //collision with the food
+	if(snake[0].x==food.x && snake[0].y==food.y)
+	{
+		get=true;
+		putfood();
+		points+=10;
+		move(maxheight-1,0);
+		printw("%d",points);
+		
+		if((points%100)==0)
+			del-=10000;
+
+	}
+	
+	//collision with the poison
+	else if(snake[0].x==poison.x && snake[0].y==poison.y)
+	{
+		get=false;
+		lost = true;
+		putpoison();
+		points-=10;
+		move(maxheight-1,0);
+		printw("%d",points);
+		if((points%100)==0)
+			del-=10000;
+	}
+	
+	else{
+		get=false;
+	}
+
+	return false;
 }
 
 
@@ -216,6 +250,7 @@ void snakeclass::movesnake()
     }else if(direction=='d'){
         snake.insert(snake.begin(),snakepart(snake[0].x,snake[0].y+1));
     }
+
         move(snake[0].y,snake[0].x);
         addch(partchar);
     refresh();
@@ -225,13 +260,16 @@ void snakeclass::start()
 {
     while(1)
     {
+	// 벽 또는 자기 자신과 충돌 발생하면 게임 종료
         if(collision())
         {
             move(12,36);
             printw("game_over");
             break;
         }
-        movesnake();
+
+        movesnake();	//스네이크 이동
+
         if(direction=='q')              //exit
             break;
         usleep(del);            //Linux delay
