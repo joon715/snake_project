@@ -1,0 +1,11 @@
+# ninja log v5
+12	596	1623921051218719700	CMakeFiles/snake_game.dir/src/main.cpp.o	308028b4cdcdff5
+16	645	1623921051229990500	CMakeFiles/snake_game.dir/src/game_board.cpp.o	da36861d37e8642a
+14	724	1623921051345371200	CMakeFiles/snake_game.dir/src/snake.cpp.o	9cb89a40204c5b06
+730	1092	1623921051715161800	snake_game	c92a68d18ab32e16
+13	612	1623922130140261200	CMakeFiles/snake_game.dir/src/main.cpp.o	308028b4cdcdff5
+16	756	1623922130289033300	CMakeFiles/snake_game.dir/src/snake.cpp.o	9cb89a40204c5b06
+15	520	1623922222711879000	CMakeFiles/snake_game.dir/src/main.cpp.o	308028b4cdcdff5
+20	542	1623922222727879400	CMakeFiles/snake_game.dir/src/game_board.cpp.o	da36861d37e8642a
+17	659	1623922222847138700	CMakeFiles/snake_game.dir/src/snake.cpp.o	9cb89a40204c5b06
+665	1075	1623922223267783400	snake_game	c92a68d18ab32e16

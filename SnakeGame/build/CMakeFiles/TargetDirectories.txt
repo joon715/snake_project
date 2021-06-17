@@ -1,0 +1,3 @@
+/mnt/c/Users/kimwj/OneDrive/바탕 화면/4-1/C++/프로젝트/2021-1-cpp-SnakeGame/SnakeGame/build/CMakeFiles/rebuild_cache.dir
+/mnt/c/Users/kimwj/OneDrive/바탕 화면/4-1/C++/프로젝트/2021-1-cpp-SnakeGame/SnakeGame/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/kimwj/OneDrive/바탕 화면/4-1/C++/프로젝트/2021-1-cpp-SnakeGame/SnakeGame/build/CMakeFiles/snake_game.dir
